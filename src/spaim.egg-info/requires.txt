@@ -1,0 +1,5 @@
+transformers>=4.55.1
+torch
+accelerate
+kernels
+triton>=3.4

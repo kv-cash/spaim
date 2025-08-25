@@ -17,7 +17,7 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-    "transformers>=4.55.1",
+    "transformers",
     "torch",
     "accelerate",
     "kernels",

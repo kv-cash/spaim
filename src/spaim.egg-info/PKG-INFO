@@ -1,0 +1,19 @@
+Metadata-Version: 2.4
+Name: spaim
+Version: 0.0.1
+Summary: A library to test prompt injections on large language models.
+Author-email: Kyle Vachon <fief_toe.9x@icloud.com>
+Project-URL: Homepage, https://github.com/kv-cash/spaim
+Project-URL: Issues, https://github.com/kv-cash/spaim/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: transformers>=4.55.1
+Requires-Dist: torch
+Requires-Dist: accelerate
+Requires-Dist: kernels
+Requires-Dist: triton>=3.4
+Dynamic: license-file
