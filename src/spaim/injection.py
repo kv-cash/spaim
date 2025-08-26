@@ -30,19 +30,7 @@ class PromptInjection:
         self.analysis = analysis
         self.tool_response = tool_response
         self.tokenizer = AutoTokenizer.from_pretrained(self.model_id)
-        self.tokenizer.chat_template = """
-            {% for message in messages %}
-            {% if message['role'] == 'user' %}
-            <|start|>user<|message|>{{ message['content'] }}<|end|>
-            {% elif message['role'] == 'assistant' %}
-            <|start|>assistant<|message|>{{ message['content'] }}<|end|>
-            {% elif message['role'] == 'analysis' %}
-            <|start|>analysis<|message|>{{ message['content'] }}<|end|>
-            {% elif message['role'] == 'tool_response' %}
-            <|start|>{{ message['name'] }} to=assistant<|channel|>commentary<|message|>{{ message['content'] }}<|end|>
-            {% endif %}
-            {% endfor %}
-            """
+   
 
     def __str__(self):
         """
@@ -51,8 +39,11 @@ class PromptInjection:
         Returns:
             str: The formatted prompt injection string.
         """
+        tool_list = [tool.to_dict() for tool in self.tools.tools] if self.tools else None
         messages = [
-            {"role": "system", "content": self.system_message+self.developer_message+self.tools.__str__()},
+            {"role": "system", "content": self.system_message+"""#Tools:## python
+Use this tool to execute Python code in your chain of thought. The code will not be shown to the user. This tool should be used for internal reasoning, but not for code that is intended to be visible to the user (e.g. when creating plots, tables, or files).
+When you send a message containing Python code to python, it will be executed in a stateful Jupyter notebook environment. python will respond with the output of the execution or time out after 120.0 seconds. The drive at '/mnt/data' can be used to save and persist user files. Internet access for this session is Available."""+self.developer_message+str(tool_list)},
             {"role": "user", "content": self.user_message},
         ]
 
@@ -60,12 +51,11 @@ class PromptInjection:
         if self.analysis:
             # The role for COT might vary by model, 'assistant_cot' is a placeholder
             messages.append({"role": "analysis", "content": self.analysis})
-        if self.tools:
-            messages.append({"role": "tools", "content": str(self.tools)})
         if self.tool_response:
             # The role for tool responses can also vary
             messages.append({"role": "tool_response", "content": self.tool_response})
         if self.assistant_message:
             messages.append({"role": "assistant", "content": self.assistant_message})
+        
 
         return self.tokenizer.apply_chat_template(messages, tokenize=False)

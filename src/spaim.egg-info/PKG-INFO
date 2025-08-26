@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: spaim
-Version: 0.0.7
+Version: 0.0.8
 Summary: A library to test prompt injections on large language models.
 Author-email: Kyle Vachon <fief_toe.9x@icloud.com>
 Project-URL: Homepage, https://github.com/kv-cash/spaim

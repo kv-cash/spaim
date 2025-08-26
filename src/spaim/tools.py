@@ -29,9 +29,8 @@ class ToolBox:
 
     def _add_builtin_tools(self, model_id):
         """Adds model-specific built-in tools."""
-        # This is a simplified example. In a real scenario, you'd have a mapping
-        # of model IDs to their specific built-in tools.
-        if "gpt-oss-20b" in model_id:
+        # This check is now more robust and not case-sensitive.
+        if "gpt-oss-20b" in model_id.lower():
             browser_tool = Tool(
                 tool_name="browser",
                 tool_description="Browse the web to find information.",
@@ -50,7 +49,7 @@ class ToolBox:
             )
             self.tools.extend([browser_tool, python_interpreter])
         # Add other models and their tools here
-        # elif "some-other-model" in model_id:
+        # elif "some-other-model" in model_id.lower():
         #     ...
 
     def __str__(self):
