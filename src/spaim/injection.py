@@ -7,7 +7,7 @@ class PromptInjection:
     This class extends the concept of a normal prompt with additional fields for
     simulating assistant responses, chain-of-thought, and tool outputs.
     """
-    def __init__(self, model_id: str, system_message: str, developer_message: str, user_message: str, tools=None, assistant_message=None, assistant_cot=None, tool_response=None):
+    def __init__(self, model_id: str, system_message: str, developer_message: str, user_message: str, tools=None, assistant_message=None, analysis=None, tool_response=None):
         """
         Initializes the PromptInjection object.
 
@@ -27,9 +27,22 @@ class PromptInjection:
         self.user_message = user_message
         self.tools = tools
         self.assistant_message = assistant_message
-        self.assistant_cot = assistant_cot
+        self.analysis = analysis
         self.tool_response = tool_response
         self.tokenizer = AutoTokenizer.from_pretrained(self.model_id)
+        self.tokenizer.chat_template = """
+            {% for message in messages %}
+            {% if message['role'] == 'user' %}
+            <|start|>user<|message|>{{ message['content'] }}<|end|>
+            {% elif message['role'] == 'assistant' %}
+            <|start|>assistant<|message|>{{ message['content'] }}<|end|>
+            {% elif message['role'] == 'analysis' %}
+            <|start|>analysis<|message|>{{ message['content'] }}<|end|>
+            {% elif message['role'] == 'tool_response' %}
+            <|start|>{{ message['name'] }} to=assistant<|channel|>commentary<|message|>{{ message['content'] }}<|end|>
+            {% endif %}
+            {% endfor %}
+            """
 
     def __str__(self):
         """
@@ -39,19 +52,20 @@ class PromptInjection:
             str: The formatted prompt injection string.
         """
         messages = [
-            {"role": "system", "content": self.system_message+self.developer_message},
+            {"role": "system", "content": self.system_message+self.developer_message+self.tools.__str__()},
             {"role": "user", "content": self.user_message},
         ]
 
-        if self.assistant_message:
-            messages.append({"role": "assistant", "content": self.assistant_message})
-        if self.assistant_cot:
+        
+        if self.analysis:
             # The role for COT might vary by model, 'assistant_cot' is a placeholder
-            messages.append({"role": "assistant_cot", "content": self.assistant_cot})
+            messages.append({"role": "analysis", "content": self.analysis})
         if self.tools:
             messages.append({"role": "tools", "content": str(self.tools)})
         if self.tool_response:
             # The role for tool responses can also vary
             messages.append({"role": "tool_response", "content": self.tool_response})
+        if self.assistant_message:
+            messages.append({"role": "assistant", "content": self.assistant_message})
 
         return self.tokenizer.apply_chat_template(messages, tokenize=False)

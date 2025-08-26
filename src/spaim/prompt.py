@@ -34,8 +34,7 @@ class Prompt:
             str: The fully formatted prompt string with special tokens.
         """
         messages = [
-            {"role": "system", "content": self.system_message},
-            {"role": "developer", "content": self.developer_message},
+            {"role": "system", "content":self.system_message+self.developer_message+self.tools.__str__()},
             {"role": "user", "content": self.user_message},
         ]
 
