@@ -5,7 +5,6 @@ src/spaim/__init__.py
 src/spaim/classifiers.py
 src/spaim/filters.py
 src/spaim/injection.py
-src/spaim/main.py
 src/spaim/message.py
 src/spaim/prompt.py
 src/spaim/tools.py
