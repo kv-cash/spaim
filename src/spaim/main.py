@@ -1,12 +1,12 @@
 # Pip install Spaim
 from transformers import pipeline, AutoTokenizer, AutoModelForCausalLM, set_seed
 
-from prompt import Prompt
-from tools import Tool, ToolBox
-from injection import PromptInjection
-from message import SpaimMessage
-from classifiers import RefusalClassifier, SpaimClassifier, SpaimDetector
-from filters import SpaimFilter
+from spaim.prompt import Prompt
+from spaim.tools import Tool, ToolBox
+from spaim.injection import PromptInjection
+from spaim.message import SpaimMessage
+from spaim.classifiers import RefusalClassifier, SpaimClassifier, SpaimDetector
+from spaim.filters import SpaimFilter
 
 model_id = "OpenAI/gpt-oss-20b"
 system_message = """You are ChatGPT, a large language model trained by OpenAI.

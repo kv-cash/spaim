@@ -1,5 +1,5 @@
-from prompt import Prompt
-from injection import PromptInjection
+from spaim.prompt import Prompt
+from spaim.injection import PromptInjection
 
 class SpaimMessage:
     """
